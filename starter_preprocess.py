@@ -46,12 +46,10 @@ class TextPreprocessor:
                 "URL must point to a .txt file (Project Gutenberg format expected).")
 
         try:
-            # Hint: Use requests library
             response = requests.get(url, timeout=10)
-            response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
+            response.raise_for_status()  
             return response.text
         except requests.exceptions.RequestException as e:
-            # Raise a more informative exception for connection/URL errors
             raise Exception(f"Failed to fetch content from URL: {e}")
 
     def get_text_statistics(self, text: str) -> Dict:
@@ -66,31 +64,24 @@ class TextPreprocessor:
             - avg_sentence_length
             - most_common_words (top 10)
         """
-        # 1. Tokenize (using existing methods)
-        # Note: We use the *normalized* text (which includes sentence markers)
-        # for sentence splitting, but the cleaned text (no extra punctuation)
-        # for word/char tokenization to ensure good counts.
 
-        # Normalize the text *without* preserving sentences for general word/char counts
         normalized_words_text = self.normalize_text(
             text, preserve_sentences=False)
         words = self.tokenize_words(normalized_words_text)
 
-        # Tokenize characters (excluding space for a better character count)
         chars = self.tokenize_chars(normalized_words_text, include_space=False)
 
-        # Normalize the text *with* preserving sentences for sentence splitting
         normalized_sentences_text = self.normalize_text(
             text, preserve_sentences=True)
         sentences = self.tokenize_sentences(normalized_sentences_text)
 
-        # 2. Calculate Counts
+        # Calculate Counts
         total_characters = len(chars)
         total_words = len(words)
         total_sentences = len(sentences)
 
-        # 3. Calculate Averages
-        # Calculate total word length for average word length
+        # Calculate Averages
+        # calculate total word length for average word length
         total_word_length = sum(len(w) for w in words)
         # Calculate sentence lengths in words
         sentence_lengths = self.get_sentence_lengths(sentences)
@@ -100,17 +91,13 @@ class TextPreprocessor:
         avg_sentence_length = (sum(sentence_lengths) /
                                total_sentences) if total_sentences > 0 else 0
 
-        # 4. Most Common Words (top 10)
         word_counts = Counter(words)
-        # Counter's most_common returns a list of (word, count) tuples
         most_common_words = word_counts.most_common(10)
 
-        # 5. Format Output
         statistics = {
             "total_characters": total_characters,
             "total_words": total_words,
             "total_sentences": total_sentences,
-            # Rounding for readability in the API response
             "avg_word_length": round(avg_word_length, 2),
             "avg_sentence_length": round(avg_sentence_length, 2),
             "most_common_words": most_common_words
@@ -129,39 +116,32 @@ class TextPreprocessor:
         Returns:
             Summary string
         """
-        # Ensure the text is properly normalized to allow for sentence tokenization
         normalized_text = self.normalize_text(text, preserve_sentences=True)
 
-        # Hint: Use tokenize_sentences()
         sentences = self.tokenize_sentences(normalized_text)
 
-        # Get the first N sentences
         summary_sentences = sentences[:num_sentences]
 
-        # Join them back into a single string
-        # We re-capitalize the first word of the first sentence for better appearance
+
         if summary_sentences:
             first_sentence = summary_sentences[0]
             summary_sentences[0] = first_sentence[0].upper() + \
                 first_sentence[1:]
 
-        # Join with a space for readability. Note: tokenize_sentences strips the punctuation
-        # so we re-add a period/space combo for simple formatting.
+
         summary_string = ". ".join(summary_sentences)
 
-        # Re-add a period to the end of the summary if it's not empty and doesn't end with one already
         if summary_string and summary_string[-1] not in '.!?':
             summary_string += '.'
 
         return summary_string
+    # new function to treat junk at the start of the data stream
 
     def _remove_leading_junk(self, text: str) -> str:
         """
         Removes leading non-printable characters (like BOM or zero-width spaces)
         that can cause issues with decoding or regex matching at the start of a file.
         """
-        # Matches any non-printable/control character (e.g., BOM, tabs, non-breaking spaces)
-        # that might be leading the text, plus any standard whitespace, from the start.
         return re.sub(r'^[\ufeff\u200b\s]+', '', text)
 
     def clean_gutenberg_text(self, raw_text: str) -> str:
@@ -171,7 +151,6 @@ class TextPreprocessor:
 
         lines = raw_text.split('\n')
 
-        # Find start and end markers
         start_idx = 0
         end_idx = len(lines)
 
@@ -203,15 +182,13 @@ class TextPreprocessor:
         # Convert to lowercase
         text = text.lower()
 
-        # Standardize quotes and dashes
-        # Fix: Using a proper regex pattern for smart quotes [‘’] instead of the problematic ['']
+
         text = re.sub(r'[“”]', '"', text)
         text = re.sub(r'[‘’]', "'", text)
         text = re.sub(r'—|–', '-', text)
 
         if preserve_sentences:
-            # Keep sentence endings but remove other punctuation
-            # This regex keeps . ! ? but removes , ; : etc
+
             text = re.sub(r'[^\w\s.!?\'-]', ' ', text)
         else:
             # Remove all punctuation except apostrophes in contractions
@@ -224,7 +201,6 @@ class TextPreprocessor:
 
     def tokenize_sentences(self, text: str) -> List[str]:
         """Split text into sentences"""
-        # Simple sentence splitter (you can make this fancier with NLTK)
         sentences = re.split(r'[.!?]+', text)
 
         # Clean up and filter
@@ -258,51 +234,7 @@ class TextPreprocessor:
 
     # TODO: Implement these methods for the warm-up assignment
 
-    # def fetch_from_url(self, url: str) -> str:
-    #     """
-    #     TODO: Fetch text content from a URL (especially Project Gutenberg)
 
-    #     Args:
-    #         url: URL to a .txt file
-
-    #     Returns:
-    #         Raw text content
-
-    #     Raises:
-    #         Exception if URL is invalid or cannot be reached
-    #     """
-    #     # Hint: Use requests.get() and validate that it's a .txt URL
-    #     # Don't forget error handling!
-    #     raise NotImplementedError("Implement this for Part 2 of the assignment")
-
-    # def get_text_statistics(self, text: str) -> Dict:
-    #     """
-    #     TODO: Calculate basic statistics about the text
-
-    #     Returns dictionary with:
-    #         - total_characters
-    #         - total_words
-    #         - total_sentences
-    #         - avg_word_length
-    #         - avg_sentence_length
-    #         - most_common_words (top 10)
-    #     """
-    #     # Hint: Use the existing tokenize methods and Counter
-    #     raise NotImplementedError("Implement this for Part 2 of the assignment")
-
-    # def create_summary(self, text: str, num_sentences: int = 3) -> str:
-    #     """
-    #     TODO: Create a simple extractive summary by returning the first N sentences
-
-    #     Args:
-    #         text: Cleaned text
-    #         num_sentences: Number of sentences to include
-
-    #     Returns:
-    #         Summary string
-    #     """
-    #     # Hint: Use tokenize_sentences() and join the first N sentences
-    #     raise NotImplementedError("Implement this for Part 2 of the assignment")
 
 
 class FrequencyAnalyzer:

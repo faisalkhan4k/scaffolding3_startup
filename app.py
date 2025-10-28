@@ -6,8 +6,6 @@ Implements the API endpoints for cleaning and analyzing text.
 """
 
 from flask import Flask, request, jsonify, render_template
-# IMPORTANT: Rename your preprocessor file to 'preprocess.py'
-# or ensure 'starter_preprocess.py' is correctly named.
 from starter_preprocess import TextPreprocessor
 import traceback
 import sys
@@ -16,14 +14,12 @@ import sys
 app = Flask(__name__)
 preprocessor = TextPreprocessor()
 
-# Increase recursion limit for complex processing or deep stack traces if necessary
-# sys.setrecursionlimit(2000)
+
 
 
 @app.route('/')
 def home():
     """Render a simple HTML form for URL input"""
-    # This will look for templates/index.html
     return render_template('index.html')
 
 
@@ -54,7 +50,7 @@ def clean_text():
         }
     """
     try:
-        # 1. Get JSON data from request
+        
         data = request.get_json()
         if not data or 'url' not in data:
             return jsonify({
@@ -64,37 +60,29 @@ def clean_text():
 
         url = data['url']
 
-        # 2. Fetch the text
         raw_text = preprocessor.fetch_from_url(url)
         print('working: fetch_from_url')
 
-        # 3. Clean the text (removes Gutenberg markers and leading junk)
         gutenberg_cleaned_text = preprocessor.clean_gutenberg_text(raw_text)
         print('working: gutenberg_clean_text')
 
-        # 4. Normalize the text
-        # This step performs lowercasing and punctuation removal.
-        # We use the result of this step for everything else (stats, summary, preview).
+
         normalized_text = preprocessor.normalize_text(
             gutenberg_cleaned_text, preserve_sentences=True)
         print('working: normalized_text')
 
-        # If normalization results in an empty string, we stop here.
         if not normalized_text:
             return jsonify({
                 "success": False,
                 "error": "The text was cleaned down to nothing. Check your Gutenberg URL or cleaning rules."
             }), 400
 
-        # 5. Get statistics
         statistics = preprocessor.get_text_statistics(normalized_text)
         print('working: statistics')
 
-        # 6. Create summary
         summary = preprocessor.create_summary(normalized_text, num_sentences=3)
         print('working: summary')
 
-        # 7. Return JSON response
         return jsonify({
             "success": True,
             # We return the fully normalized text for the front-end preview
@@ -104,7 +92,6 @@ def clean_text():
         })
 
     except Exception as e:
-        # Use traceback to log the full error for debugging (helpful in the terminal)
         print(f"ERROR in /api/clean: {e}")
         traceback.print_exc()
         return jsonify({
@@ -129,7 +116,7 @@ def analyze_text():
         }
     """
     try:
-        # 1. Get JSON data from request
+        
         data = request.get_json()
         if not data or 'text' not in data:
             return jsonify({
@@ -139,29 +126,23 @@ def analyze_text():
 
         raw_text = data['text']
 
-        # 2. Clean/Normalize the text (preserving sentences for stats)
-        # We don't use clean_gutenberg_text here as it's assumed to be arbitrary raw input
         normalized_text = preprocessor.normalize_text(
             raw_text, preserve_sentences=True)
 
-        # 3. Get statistics with preprocessor.get_text_statistics()
         statistics = preprocessor.get_text_statistics(normalized_text)
 
-        # 4. Return JSON response
         return jsonify({
             "success": True,
             "statistics": statistics
         })
 
     except Exception as e:
-        # Catch exceptions during preprocessing
         print(f"Error in /api/analyze: {e}", file=sys.stderr)
         return jsonify({
             "success": False,
             "error": f"Processing error: {str(e)}"
         }), 500
 
-# Error handlers (these look good, keeping them as they provide nice JSON error responses)
 
 
 @app.errorhandler(404)
