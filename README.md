@@ -2,8 +2,13 @@
 
 Below is a screenshot demonstrating the fully functional web interface.
 
-![1](Screenshot 2025-10-27 171002.png)
-![2](Screenshot 2025-10-27 185258.png)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20171002.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20185258.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20193618.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20193638.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20193837.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20193854.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20194005.png?raw=true)
 
 # CSE 510 Warm-Up Assignment: Text Preprocessing Web Service
 
