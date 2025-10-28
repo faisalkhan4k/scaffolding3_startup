@@ -1,3 +1,15 @@
+## Screenshot Submission
+
+Below is a screenshot demonstrating the fully functional web interface.
+
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20171002.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20185258.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20193618.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20193638.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20193837.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20193854.png?raw=true)
+![image](https://github.com/faisalkhan4k/scaffolding3_startup/blob/main/Screenshot%202025-10-27%20194005.png?raw=true)
+
 # CSE 510 Warm-Up Assignment: Text Preprocessing Web Service
 
 Welcome to the warm-up assignment for CSE 510! This assignment will help you get familiar with text preprocessing, web development with Flask, and working with Project Gutenberg texts before diving into the main Shannon Information Theory assignment.
